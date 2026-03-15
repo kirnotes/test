@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KIR Note Helper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+      <div class="brand-icon">HF</div>
+      <h1>KIR Note Helper</h1>
+      <p class="sub">Enter your agent name to continue.</p>
+
+      <label for="loginName">Agent Name</label>
+      <input id="loginName" type="text" placeholder="e.g. John D" />
+
+      <div class="row">
+        <button id="loginBtn" class="btn" type="button">Log In</button>
+      </div>
+
+      <div id="loginError" class="hint error-text"></div>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <button id="toggleSidebar" class="status-pill" type="button">Hide menu</button>
+      <div class="brand-icon">HF</div>
+      <div>
+        <div class="brand-title">KIR Note Helper</div>
+        <div class="brand-sub">Structured note workflow with guided selections and NIA actions</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="status-pill">Agent: <strong id="currentAgent">—</strong></div>
+      <button id="backendStatus" class="status-pill" type="button">Checking...</button>
+      <button id="refreshAnalyticsBtn" class="status-pill" type="button">Refresh Dashboard</button>
+      <button id="exportTodayHistory" class="status-pill" type="button">Export Daily History</button>
+      <a id="openSheet" class="status-pill" href="#" target="_blank" rel="noopener noreferrer">Open Sheet</a>
+      <button id="logoutBtn" class="status-pill danger" type="button">Log Out</button>
+      <div id="copyToast" class="toast"></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" class="sidebar">
+      <nav class="nav">
+        <a href="#builder" class="active"><span class="dot"></span> Builder</a>
+        <a href="#dashboard"><span class="dot"></span> Local Dashboard</a>
+        <a href="#cloudDashboard"><span class="dot"></span> Team Dashboard</a>
+        <a href="#recent"><span class="dot"></span> Recent Notes</a>
+        <a href="#cutoff"><span class="dot"></span> Cutoff Clock</a>
+      </nav>
+
+      <div class="sidebar-tip">
+        Start with one panel. Choose one wrap code, then one keyword, then generate your KIR note.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="builder" class="panel">
+        <div class="section-head">
+          <div>
+            <h2>Builder</h2>
+            <p class="sub">Build KIR notes with guided wrap, keyword, hint, and NIA support.</p>
+          </div>
+          <div class="builder-toolbar">
+            <button id="addPanelBtn" class="size-btn" type="button">Add Panel</button>
+            <div id="panelCountText" class="hint">1 of 3 panels in use</div>
+          </div>
+        </div>
+
+        <div id="buildersGrid" class="builders-grid" data-panels="1"></div>
+      </section>
+
+      <section id="dashboard" class="panel">
+        <h2>Local Dashboard</h2>
+        <p class="sub">Saved in this browser only.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-label">Total Notes</div>
+            <div id="dashTotalNotes" class="kpi-value">0</div>
+            <div class="kpi-hint">All locally tracked notes</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label">Today Notes</div>
+            <div id="dashTodayNotes" class="kpi-value">0</div>
+            <div class="kpi-hint">Generated today in this browser</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label">Top Wrap</div>
+            <div id="dashTopWrap" class="kpi-value">—</div>
+            <div class="kpi-hint">Most used locally</div>
+          </div>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="subpanel">
+            <h3>Top Keyword</h3>
+            <div id="dashTopKeyword" class="kpi-value">—</div>
+          </div>
+
+          <div class="subpanel">
+            <h3>Most Used Panel</h3>
+            <div id="dashTopPanel" class="kpi-value">—</div>
+          </div>
+
+          <div class="subpanel">
+            <h3>Panel Usage</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Panel</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody id="panelUsageTable"></tbody>
+            </table>
+          </div>
+
+          <div class="subpanel">
+            <h3>Recent Activity</h3>
+            <div id="recentActivityList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cutoff" class="panel">
+        <h2>Cutoff Clock (US)</h2>
+        <p class="sub">Check whether box cancellation or modifications are still allowed for a selected delivery date.</p>
+
+        <div class="cutoff-top">
+          <div class="cutoff-time-card">
+            <div class="cutoff-time-label">Current Local Time</div>
+            <div id="cutoffCurrentTime" class="cutoff-time-value">—</div>
+            <div class="cutoff-time-zone">Eastern Daylight Time</div>
+          </div>
+
+          <div class="cutoff-date-card">
+            <div class="cutoff-date-label">Scheduled Delivery Date</div>
+            <div id="cutoffSelectedLabel" class="cutoff-date-title">—</div>
+            <div id="cutoffQuickDates" class="cutoff-date-picker"></div>
+            <div class="row" style="margin-top:10px;">
+              <input id="cutoffDeliveryDate" type="date" />
+            </div>
+          </div>
+        </div>
+
+        <div class="subpanel">
+          <h3>Brand Status</h3>
+          <div id="cutoffBrandCards" class="cutoff-brand-list"></div>
+        </div>
+
+        <div class="subpanel" style="margin-top:14px;">
+          <h3>Brand Delivery Schedule</h3>
+          <div id="deliveryScheduleTable" class="cutoff-table-wrap"></div>
+        </div>
+
+        <div class="subpanel" style="margin-top:14px;">
+          <h3>Customer Cutoff Rules</h3>
+          <div id="cutoffRulesTable" class="cutoff-table-wrap"></div>
+        </div>
+
+        <div class="subpanel" style="margin-top:14px;">
+          <h3>Actions Permitted During Grace Period</h3>
+          <div id="gracePeriodTable" class="cutoff-table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="cloudDashboard" class="panel">
+        <h2>Team Dashboard</h2>
+        <p class="sub">Live analytics from Google Sheets through Apps Script.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-label">Today Top Wrap</div>
+            <div id="cloudTodayTopWrap" class="kpi-value">—</div>
+            <div class="kpi-hint">Across all agents</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label">Today Top Keyword</div>
+            <div id="cloudTodayTopKeyword" class="kpi-value">—</div>
+            <div class="kpi-hint">Across all agents</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-label">Today Notes</div>
+            <div id="cloudTodayNotes" class="kpi-value">0</div>
+            <div class="kpi-hint">Saved to sheet</div>
+          </div>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="subpanel">
+            <h3>Current Agent Top Wrap</h3>
+            <div id="cloudUserTopWrap" class="kpi-value">—</div>
+          </div>
+
+          <div class="subpanel">
+            <h3>Current Agent Top Keyword</h3>
+            <div id="cloudUserTopKeyword" class="kpi-value">—</div>
+          </div>
+
+          <div class="subpanel">
+            <h3>Current Agent Total Notes</h3>
+            <div id="cloudUserTotalNotes" class="kpi-value">0</div>
+          </div>
+
+          <div class="subpanel">
+            <h3>Current Agent Notes Today</h3>
+            <div id="cloudUserTodayNotes" class="kpi-value">0</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="recent" class="panel">
+        <h2>Recent Notes</h2>
+        <p class="sub">Saved in this browser for quick reference.</p>
+        <div id="recentList" class="recent-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
