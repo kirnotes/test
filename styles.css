@@ -41,15 +41,24 @@ body{
 }
 
 .brand-icon{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  font-weight:900;
-  color:#fff;
-  background:linear-gradient(135deg,var(--hf-green),var(--hf-green-2));
-  box-shadow:var(--shadow);
+  width:54px;
+  height:54px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border:1px solid #dfe8e1;
+  box-shadow:0 10px 24px rgba(16,24,40,.08);
+  overflow:hidden;
+  padding:7px;
+}
+
+.brand-logo{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
 }
 
 .brand-title{
@@ -97,10 +106,18 @@ body{
   min-height:calc(100vh - 79px);
 }
 
+.layout.sidebar-hidden{
+  grid-template-columns:1fr;
+}
+
 .sidebar{
   border-right:1px solid var(--line);
   padding:16px;
   background:#f8fbf8;
+}
+
+.sidebar.is-hidden{
+  display:none;
 }
 
 .nav{
@@ -865,7 +882,6 @@ th{
     border-right:none;
     border-bottom:1px solid var(--line);
   }
-  .sidebar.is-hidden{display:none}
   .main{padding:14px}
   .kpis,
   .grid2,
